@@ -1,3 +1,7 @@
+# SOCIAL NETWORK ANALYSIS - EMRD
+# Monica Ramperez Andres
+
+
 import matplotlib.pyplot as plt
 import pandas            as pd
 import numpy             as np
@@ -11,13 +15,12 @@ from sklearn.ensemble        import RandomForestClassifier
 from sklearn.dummy           import DummyClassifier
 from sklearn.tree            import DecisionTreeClassifier
 
-from scipy.stats             import f_oneway
-from scipy                   import stats
+from scipy.stats             import shapiro, f_oneway, kruskal
 
 
 
 # Leemos la matriz de caracteristicas
-data = pd.read_csv('dataset.csv')
+data = pd.read_csv('feature_matrix.csv')
 
 # Separamos la variable clase
 X = data.drop(['Rating'], axis=1)
@@ -27,9 +30,11 @@ y = data['Rating']
 scores = []
 measures = ['accuracy', 'precision', 'recall', 'f1', 'roc_auc']
 
-#print(sorted(sklearn.metrics.SCORERS.keys()))
 
-'''
+# CLASIFICADORES
+print('\n\n' + '~'*50 + '\n · C L A S I F I C A D O R E S\n' + '~'*50)
+
+
 # CLASIFICADOR NAIVE BAYES
 print('\n ' + '-'*50 + '\n · Clasificador Naive Bayes\n')
 
@@ -47,21 +52,9 @@ for i in measures:
 	print('    > ' + i + ': ' + str(aux_scores[-1]) + '      (MEAN: ' + str(round(aux_scores[-1].mean(), 2)) + ')')
 
 scores.append(aux_scores)
-'''
-'''
-sol = np.zeros((5,11))
 
-for i in range(5):
-	for j in range(10):
-		sol[i][j] = round(scores[0][i][j], 2)
-	sol[i][10] = round(scores[0][i].mean(), 2)
 
-print(sol)
 
-pd.DataFrame(sol).to_csv("nb.csv")
-'''
-
-'''
 # CLASIFICADOR kNN
 print('\n ' + '-'*50 + '\n · Clasificador kNN\n')
 
@@ -81,20 +74,8 @@ for i in measures:
 
 scores.append(aux_scores)
 
-sol = np.zeros((5,11))
-
-for i in range(5):
-	for j in range(10):
-		sol[i][j] = round(scores[0][i][j], 2)
-	sol[i][10] = round(scores[0][i].mean(), 2)
-
-print(sol)
-
-pd.DataFrame(sol).to_csv("knn.csv")
-'''
 
 
-'''
 # CLASIFICADOR DECISION TREE
 print('\n ' + '-'*50 + '\n · Decision Tree\n')
 
@@ -115,18 +96,7 @@ for i in measures:
 
 scores.append(aux_scores)
 
-sol = np.zeros((5,11))
 
-for i in range(5):
-	for j in range(10):
-		sol[i][j] = round(scores[0][i][j], 2)
-	sol[i][10] = round(scores[0][i].mean(), 2)
-
-print(sol)
-
-pd.DataFrame(sol).to_csv("dt.csv")
-'''
-'''
 
 # CLASIFICADOR RADOM FOREST
 print('\n ' + '-'*50 + '\n · Clasificador Random Forest\n')
@@ -146,21 +116,9 @@ for i in measures:
 
 scores.append(aux_scores)
 
-sol = np.zeros((5,11))
 
-for i in range(5):
-	for j in range(10):
-		sol[i][j] = round(scores[0][i][j], 2)
-	sol[i][10] = round(scores[0][i].mean(), 2)
 
-print(sol)
-
-pd.DataFrame(sol).to_csv("rf.csv")
-
-'''
-
-'''
-# CLASIFICADOR RED NEURONAL
+# CLASIFICADOR RED NEURONAL - MLP
 print('\n ' + '-'*50 + '\n · MLPClassifier\n')
 
 # Tuning de parametros
@@ -185,51 +143,6 @@ for i in measures:
 
 scores.append(aux_scores)
 
-
-sol = np.zeros((5,11))
-
-for i in range(5):
-	for j in range(10):
-		sol[i][j] = round(scores[0][i][j], 2)
-	sol[i][10] = round(scores[0][i].mean(), 2)
-
-print(sol)
-
-pd.DataFrame(sol).to_csv("mlp.csv")
-'''
-
-nb = pd.read_csv('nb.csv').to_numpy()
-nb = np.delete(nb, 0, axis=1)
-nb = np.delete(nb, 10, axis=1)
-print('\nNaive bayes!\n'+ str(nb))
-
-knn = pd.read_csv('knn.csv').to_numpy()
-knn = np.delete(knn, 0, axis=1)
-knn = np.delete(knn, 10, axis=1)
-print('\nkNN!\n'+ str(knn))
-
-dt = pd.read_csv('dt.csv').to_numpy()
-dt = np.delete(dt, 0, axis=1)
-dt = np.delete(dt, 10, axis=1)
-print('\nDecision Tree!\n'+ str(dt))
-
-rf = pd.read_csv('rf.csv').to_numpy()
-rf = np.delete(rf, 0, axis=1)
-rf = np.delete(rf, 10, axis=1)
-print('\nRandom Forest!\n'+ str(rf))
-
-mlp = pd.read_csv('mlp.csv').to_numpy()
-mlp = np.delete(mlp, 0, axis=1)
-mlp = np.delete(mlp, 10, axis=1)
-print('\nMLP!\n'+ str(mlp))
-
-
-scores = []
-scores.append(nb)
-scores.append(knn)
-scores.append(dt)
-scores.append(rf)
-scores.append(mlp)
 
 
 # TEST ESTADISTICOS
@@ -256,8 +169,8 @@ for clasA in range(5):
 
 
 			# Realizamos el test de normalidad
-			tstatis1, pvalue1 = stats.shapiro(scores[clasA][j])
-			tstatis2, pvalue2 = stats.shapiro(scores[clasB][j])
+			tstatis1, pvalue1 = shapiro(scores[clasA][j])
+			tstatis2, pvalue2 = shapiro(scores[clasB][j])
 
 			#print('    > Shapiro Test Statistic A: ' + str(tstatis))
 			#print('    > Shapiro Test PValue A:    ' + str(pvalue))
@@ -284,7 +197,7 @@ for clasA in range(5):
 			# Si no se asume normalidad se utiliza Krusal Wallis
 			else:
 
-				tstatis, pvalue = stats.kruskal(scores[clasA][j], scores[clasB][j])
+				tstatis, pvalue = kruskal(scores[clasA][j], scores[clasB][j])
 
 				#print('    > KRUSAL W. Test Statistic: ' + str(tstatis))
 				#print('    > KRUSAL W. Test PValue:    ' + str(pvalue))

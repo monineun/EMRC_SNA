@@ -1,3 +1,7 @@
+# SOCIAL NETWORK ANALYSIS - EMRD
+# Monica Ramperez Andres
+
+
 import matplotlib.pyplot as plt
 import networkx          as nx
 import pandas            as pd
@@ -68,6 +72,9 @@ G = Graph.Weighted_Adjacency(adj_mat)
 feat_mat = data.copy()
 
 
+print('\n\n · EXTRAYENDO CARACTERISTICAS...\n' + '·'*45)
+
+
 # MEDIDAS A NIVEL DE GRAFO
 C1 = []
 
@@ -114,7 +121,6 @@ feat_mat['Recipr']     = C4
 
 
 # MEDIDAS A NIVEL DE NODO
-# TODO: Fix this!
 C1A = []
 C1B = []
 
@@ -244,6 +250,9 @@ feat_mat = feat_mat.drop(['User B'], axis=1)
 X = feat_mat.drop(['Rating'], axis=1)
 y = feat_mat['Rating']
 
+
+print('\n\n · SMOTE...\n' + '·'*45)
+
 # Aplicamos SMOTE para la clase minoritaria
 oversample = SMOTE('minority')
 newX, newy = oversample.fit_resample(X, y)
@@ -263,7 +272,5 @@ newX['Rating'] = newy
 print('\n' + '·'*45 + '\n· M E D I D A S   D E   C E N T R A L I D A D ·\n' + '·'*45)
 print(newX)
 
-print(newX['Rating'].value_counts())
-
-
-newX.to_csv('dataset.csv', header=True, index=False)
+# Guardamos la matriz de caracteristicas
+newX.to_csv('feature_matrix.csv', header=True, index=False)
