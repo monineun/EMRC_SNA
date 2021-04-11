@@ -6,13 +6,11 @@ import matplotlib.pyplot as plt
 import pandas            as pd
 import numpy             as np
 
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import cross_val_score, GridSearchCV
 from sklearn.neural_network  import MLPClassifier
 from sklearn.naive_bayes     import GaussianNB
 from sklearn.neighbors       import KNeighborsClassifier
 from sklearn.ensemble        import RandomForestClassifier
-from sklearn.dummy           import DummyClassifier
 from sklearn.tree            import DecisionTreeClassifier
 
 from scipy.stats             import shapiro, f_oneway, kruskal
@@ -194,18 +192,18 @@ for clasA in range(5):
 
 
 
-			# Si no se asume normalidad se utiliza Krusal Wallis
+			# Si no se asume normalidad se utiliza Kruskal Wallis
 			else:
 
 				tstatis, pvalue = kruskal(scores[clasA][j], scores[clasB][j])
 
-				#print('    > KRUSAL W. Test Statistic: ' + str(tstatis))
-				#print('    > KRUSAL W. Test PValue:    ' + str(pvalue))
+				#print('    > KRUSKAL W. Test Statistic: ' + str(tstatis))
+				#print('    > KRUSKAL W. Test PValue:    ' + str(pvalue))
 
 				if pvalue > 0.05:
-					print('     KRUSAL W.: No hay diferencias significativas...')
+					print('     KRUSKAL W.: No hay diferencias significativas...')
 				else:
-					print('     KRUSAL W.: Hay diferencias significativas!!!')
+					print('     KRUSKAL W.: Hay diferencias significativas!!!')
 
 			
 			print('~'*50)

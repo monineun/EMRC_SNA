@@ -12,14 +12,14 @@ from   collections            import Counter
 from   igraph                 import Graph
 
 
-#Caragamos los datos
+# Caragamos los datos
 data = pd.read_csv('user_rating.txt', sep='\t', header=None, names=['User A', 'User B', 'Rating', 'Date'])
 data = data.drop(['Date'], axis=1)
 print('\n\n · D A T A S E T   O R I G I N A L\n' + '·'*45)
 print(data)
 
 
-#Reducimos el numero de nodos
+# Reducimos el numero de nodos
 num_nodes = 1000
 node_list = sorted(data['User A'].unique())[:num_nodes]
 
@@ -30,7 +30,7 @@ data = data.reset_index()
 data = data.drop(['index'], axis=1)
 
 
-#Reseteamos los IDs de los nodos
+# Reseteamos los IDs de los nodos
 un_A = sorted(data['User A'].unique())
 un_B = sorted(data['User B'].unique())
 
@@ -56,7 +56,7 @@ print('\n Número de nodos: ' + str(num_nodes))
 
 
 
-#Creamos la matriz de adyacencia
+# Creamos la matriz de adyacencia
 adj_mat = np.zeros((num_nodes, num_nodes))
 
 for indice_fila, fila in data.iterrows():
@@ -64,7 +64,7 @@ for indice_fila, fila in data.iterrows():
 
 
 
-#Creamos el grafo con igraph a partir de la matriz de adyacencia
+# Creamos el grafo con igraph a partir de la matriz de adyacencia
 G = Graph.Weighted_Adjacency(adj_mat)
 
 
