@@ -5,7 +5,7 @@ import numpy             as np
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.neural_network  import MLPClassifier
-from sklearn.naive_bayes     import BernoulliNB
+from sklearn.naive_bayes     import GaussianNB
 from sklearn.neighbors       import KNeighborsClassifier
 from sklearn.ensemble        import RandomForestClassifier
 from sklearn.dummy           import DummyClassifier
@@ -29,17 +29,17 @@ measures = ['accuracy', 'precision', 'recall', 'f1', 'roc_auc']
 
 #print(sorted(sklearn.metrics.SCORERS.keys()))
 
-
+'''
 # CLASIFICADOR NAIVE BAYES
 print('\n ' + '-'*50 + '\n · Clasificador Naive Bayes\n')
 
 # Tuning de parametros
-# params_nv = {'alpha': [0.01, 0.1, 0.5, 1.0, 10.0]}
-# grid_nv = GridSearchCV(BernoulliNB(), params_nv, cv=10, scoring='accuracy')
+# params_nv = {'var_smoothing': [0.0, 0.01, 0.1, 0.5, 1.0]}
+# grid_nv = GridSearchCV(GaussianNB(), params_nv, cv=10, scoring='accuracy')
 # grid_nv.fit(X,y)
 # print(grid_nv.best_params_)
 
-clf = BernoulliNB(alpha=0.01)
+clf = GaussianNB(var_smoothing=0.0)
 aux_scores = []
 
 for i in measures:
@@ -47,9 +47,21 @@ for i in measures:
 	print('    > ' + i + ': ' + str(aux_scores[-1]) + '      (MEAN: ' + str(round(aux_scores[-1].mean(), 2)) + ')')
 
 scores.append(aux_scores)
+'''
+'''
+sol = np.zeros((5,11))
 
+for i in range(5):
+	for j in range(10):
+		sol[i][j] = round(scores[0][i][j], 2)
+	sol[i][10] = round(scores[0][i].mean(), 2)
 
+print(sol)
 
+pd.DataFrame(sol).to_csv("nb.csv")
+'''
+
+'''
 # CLASIFICADOR kNN
 print('\n ' + '-'*50 + '\n · Clasificador kNN\n')
 
@@ -69,8 +81,20 @@ for i in measures:
 
 scores.append(aux_scores)
 
+sol = np.zeros((5,11))
+
+for i in range(5):
+	for j in range(10):
+		sol[i][j] = round(scores[0][i][j], 2)
+	sol[i][10] = round(scores[0][i].mean(), 2)
+
+print(sol)
+
+pd.DataFrame(sol).to_csv("knn.csv")
+'''
 
 
+'''
 # CLASIFICADOR DECISION TREE
 print('\n ' + '-'*50 + '\n · Decision Tree\n')
 
@@ -91,7 +115,18 @@ for i in measures:
 
 scores.append(aux_scores)
 
+sol = np.zeros((5,11))
 
+for i in range(5):
+	for j in range(10):
+		sol[i][j] = round(scores[0][i][j], 2)
+	sol[i][10] = round(scores[0][i].mean(), 2)
+
+print(sol)
+
+pd.DataFrame(sol).to_csv("dt.csv")
+'''
+'''
 
 # CLASIFICADOR RADOM FOREST
 print('\n ' + '-'*50 + '\n · Clasificador Random Forest\n')
@@ -111,8 +146,20 @@ for i in measures:
 
 scores.append(aux_scores)
 
+sol = np.zeros((5,11))
 
+for i in range(5):
+	for j in range(10):
+		sol[i][j] = round(scores[0][i][j], 2)
+	sol[i][10] = round(scores[0][i].mean(), 2)
 
+print(sol)
+
+pd.DataFrame(sol).to_csv("rf.csv")
+
+'''
+
+'''
 # CLASIFICADOR RED NEURONAL
 print('\n ' + '-'*50 + '\n · MLPClassifier\n')
 
@@ -139,52 +186,113 @@ for i in measures:
 scores.append(aux_scores)
 
 
+sol = np.zeros((5,11))
 
+for i in range(5):
+	for j in range(10):
+		sol[i][j] = round(scores[0][i][j], 2)
+	sol[i][10] = round(scores[0][i].mean(), 2)
 
+print(sol)
+
+pd.DataFrame(sol).to_csv("mlp.csv")
 '''
-# Shapiro Wilk
-print('\n\n' + '~'*50 + '\n · S H A P I R O   W I L K\n' + '~'*50)
 
-class_names = ['Naive Bayes', 'kNN', 'Random Forest']
-metric_names = ['Accuracy', 'Precision', 'Recall', 'F1 score']
+nb = pd.read_csv('nb.csv').to_numpy()
+nb = np.delete(nb, 0, axis=1)
+nb = np.delete(nb, 10, axis=1)
+print('\nNaive bayes!\n'+ str(nb))
 
-for i in range(len(scores)):
+knn = pd.read_csv('knn.csv').to_numpy()
+knn = np.delete(knn, 0, axis=1)
+knn = np.delete(knn, 10, axis=1)
+print('\nkNN!\n'+ str(knn))
 
-	print('\n ' + class_names[i].upper() + '\n')
+dt = pd.read_csv('dt.csv').to_numpy()
+dt = np.delete(dt, 0, axis=1)
+dt = np.delete(dt, 10, axis=1)
+print('\nDecision Tree!\n'+ str(dt))
 
-	for j in range(len(scores[0])):
+rf = pd.read_csv('rf.csv').to_numpy()
+rf = np.delete(rf, 0, axis=1)
+rf = np.delete(rf, 10, axis=1)
+print('\nRandom Forest!\n'+ str(rf))
 
-		print(' · ' + class_names[i] + ' - ' + metric_names[j])
+mlp = pd.read_csv('mlp.csv').to_numpy()
+mlp = np.delete(mlp, 0, axis=1)
+mlp = np.delete(mlp, 10, axis=1)
+print('\nMLP!\n'+ str(mlp))
 
-		shapiro_test = stats.shapiro(scores[i][j])
 
-		tstatis = shapiro_test.statistic
-		pvalue  = shapiro_test.pvalue
+scores = []
+scores.append(nb)
+scores.append(knn)
+scores.append(dt)
+scores.append(rf)
+scores.append(mlp)
 
-		print('    > Shapiro Test Statistic: ' + str(tstatis))
-		print('    > Shapiro Test PValue:    ' + str(pvalue))
 
-		if pvalue > 0.1:
-			print('     (Distribucion normal!)\n')
-		else:
-			print('     (OJO!!!)\n')
+# TEST ESTADISTICOS
+print('\n\n' + '~'*50 + '\n · T E S T S   E S T A D I S T I C O S\n' + '~'*50)
 
-# ANOVA
-print('\n\n' + '~'*50 + '\n · A N O V A\n' + '~'*50)
+class_names = ['Naive Bayes', 'kNN', 'Decision Tree', 'Random Forest', 'MLP']
+metric_names = ['Accuracy', 'Precision', 'Recall', 'F1 score', 'roc_auc']
 
-for j in range(len(scores[0])):
 
-	print(' · ' + metric_names[j])
-	print('\n    Naive Bayes mean: ' + str(np.mean(scores[0][j])))
-	print('    kNN mean:         ' + str(np.mean(scores[1][j])) + '\n')
+for clasA in range(5):
 
-	tstatis, pvalue = f_oneway(scores[0][j], scores[1][j])
+	for clasB in range(clasA + 1, 5):
 
-	print('    > ANOVA Test Statistic: ' + str(tstatis))
-	print('    > ANOVA Test PValue:    ' + str(pvalue))
+		print('\n' + '*'*40 + '\n ' + class_names[clasA] + '/' + class_names[clasB] + '\n')
 
-	if pvalue > 0.1:
-		print('     (No hay diferencia...)\n')
-	else:
-		print('     (Hay diferencia!!!)\n')
-'''
+		for j in range(len(scores[0])):
+
+			print(' · ' + class_names[clasA] + '/' + class_names[clasB] + ' - (' + metric_names[j] +')')
+
+			if np.mean(scores[clasA][j]) > np.mean(scores[clasB][j]):
+				print('    Parece mejor ' + class_names[clasA])
+			else:
+				print('    Parece mejor ' + class_names[clasB])
+
+
+			# Realizamos el test de normalidad
+			tstatis1, pvalue1 = stats.shapiro(scores[clasA][j])
+			tstatis2, pvalue2 = stats.shapiro(scores[clasB][j])
+
+			#print('    > Shapiro Test Statistic A: ' + str(tstatis))
+			#print('    > Shapiro Test PValue A:    ' + str(pvalue))
+
+			#print('    > Shapiro Test Statistic B: ' + str(tstatis))
+			#print('    > Shapiro Test PValue B:    ' + str(pvalue))
+
+
+			# Si se asume normalidad se utiliza ANOVA
+			if pvalue1 > 0.05 and pvalue2 > 0.05:
+
+				tstatis, pvalue = f_oneway(scores[clasA][j], scores[clasB][j])
+
+				#print('    > ANOVA Test Statistic: ' + str(tstatis))
+				#print('    > ANOVA Test PValue:    ' + str(pvalue))
+
+				if pvalue > 0.05:
+					print('     ANOVA: No hay diferencias significativas...')
+				else:
+					print('     ANOVA: Hay diferencias significativas!!!')
+
+
+
+			# Si no se asume normalidad se utiliza Krusal Wallis
+			else:
+
+				tstatis, pvalue = stats.kruskal(scores[clasA][j], scores[clasB][j])
+
+				#print('    > KRUSAL W. Test Statistic: ' + str(tstatis))
+				#print('    > KRUSAL W. Test PValue:    ' + str(pvalue))
+
+				if pvalue > 0.05:
+					print('     KRUSAL W.: No hay diferencias significativas...')
+				else:
+					print('     KRUSAL W.: Hay diferencias significativas!!!')
+
+			
+			print('~'*50)
