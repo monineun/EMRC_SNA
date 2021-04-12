@@ -57,7 +57,7 @@ scores.append(aux_scores)
 print('\n ' + '-'*50 + '\n · Clasificador kNN\n')
 
 # Tuning de parametros
-# params_knn = {'n_neighbors':[1,5,7,10], 'metric':['minkowski', 'jaccard', 'matching']}
+# params_knn = {'n_neighbors':[1,5,7,10], 'metric':['minkowski', 'jaccard', 'matching', 'euclidean']}
 # grid_knn = GridSearchCV(KNeighborsClassifier(), params_knn, cv=10, scoring='accuracy')
 # grid_knn.fit(X,y)
 # print(grid_knn.best_params_)
